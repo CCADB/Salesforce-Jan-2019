@@ -1,0 +1,136 @@
+<apex:page controller="OverDueActivityHistoryReport" showHeader="false" sideBar="false" cache="true" expires="3600" readOnly="true">
+    <style>
+        thead td {
+            font-weight:bold;
+            color:white;
+            font-size:14px;
+        }
+        table td {
+            padding:10px;
+            word-break:break-word;
+        }
+        <!--table#innertable td {
+            border:1px solid black;
+        }-->
+    </style>
+    <apex:pagemessages />
+    <apex:sectionHeader title="History of Overdue Audits"/>
+    <!--<div class="apexp" style="padding-left:40px; padding-right:50px; width:100%;">
+        <div id="pageBlockBody" class="bPageBlock brandSecondaryBrd apexDefaultPageBlock secondaryPalette">
+            <div class="pbHeader">
+                <table border="0" cellpadding="0" cellspacing="0">
+                    <tbody><tr><td class="pbTitle"><h2 class="mainTitle">As of {!currentDate}</h2></td><td>&nbsp;</td></tr></tbody>
+                </table>
+            </div>
+        <div class="pbBody">
+        <table class="list " border="0" cellpadding="0" cellspacing="0" style="table-layout:fixed;" >
+            <tr style="background-color:#9d9999;">           
+                <th style="width:1.0%;white-space:pre-wrap;">CA Owner</th>
+                <th style="width:1.0%;white-space:pre-wrap;">Overdue Audit Alert</th>
+                <th style="width:1.0%;white-space:pre-wrap;">Alert Created Date (mm/dd/yyyy)</th>                         
+            </tr>
+            
+            <apex:repeat value="{!lstAllTasks}"  var="task" rendered="{!lstAllTasks != null && lstAllTasks.size > 0}"> 
+                <tr class="dataRow">
+                
+                    <td class="datacell" style="border-right-width:1px;word-wrap:break-word;">
+                        <apex:outputPanel > 
+                            <apex:outputField value="{!task.What.Name}"> </apex:outputField>
+                        </apex:outputPanel>
+                    </td>
+                    
+                    <td class="datacell" style="border-right-width:1px;word-wrap:break-word;">
+                        <apex:outputPanel > 
+                            <apex:outputField value="{!task.Subject}"> </apex:outputField>
+                        </apex:outputPanel>
+                    </td>
+                    
+                    <td class="datacell" style="border-right-width:1px;word-wrap:break-word;">
+                        <apex:outputPanel > 
+                            <apex:outputText value="{0,date,MM/dd/yy}"> 
+                                <apex:param value="{!task.CreatedDate}" /> 
+                            </apex:outputText>
+                        </apex:outputPanel>
+                    </td>
+                
+                </tr>
+            </apex:repeat>
+            <apex:outputPanel rendered="{!lstAllTasks == null || lstAllTasks.size == 0}">
+                <td colspan="100%">
+                    <i>No records to display.</i>
+                </td>
+            </apex:outputPanel>
+        </table>
+        </div>
+        <div class="pbFooter secondaryPalette">
+        <div class="bg"></div>
+        </div>
+        </div>
+    </div>-->
+    <div class="apexp" style="padding-left:20px; padding-right:20px;">
+        <div id="pageBlockBody" class="bPageBlock brandSecondaryBrd apexDefaultPageBlock secondaryPalette">
+            <div class="pbHeader">
+                <table border="0" cellpadding="0" cellspacing="0">
+                    <tbody><tr><td class="pbTitle"><h2 class="mainTitle">As of {!currentDate}</h2></td><td>&nbsp;</td></tr></tbody>
+                </table>
+            </div>
+        <div class="pbBody">
+            <div style="margin-top:20px;margin-left:10px;margin-right:10px">
+                 <table border="1" width="100%" style="border-collapse:collapse;table-layout:fixed;">
+                    <thead>
+                        <tr style="background-color:#9d9999;">
+                            <td width="30%">
+                                CA Owner
+                            </td>
+                            <td width="30%">
+                                Overdue Audit Alert
+                            </td>
+                            <td width="10%">
+                                Number of Overdue Days
+                            </td>
+                            <td width="15%">
+                                Standard Audit Statement Date (mm/dd/yyyy)
+                            </td>
+                            <td width="15%">
+                                Audit Alert Create Date (mm/dd/yyyy)
+                            </td>                     
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <apex:repeat value="{!lstAllActivities}" var="task" rendered="{!lstAllActivities != null && lstAllActivities.size > 0}">
+                            <tr style="background-color:{!task.rowcolor}">
+                                <td>
+                                    {!task.objActivity.What.Name}
+                                </td>  
+                                <td>
+                                    {!task.objActivity.Subject}
+                                </td>
+                                <td>
+                                    {!task.NoOfDaysOverDue}
+                                </td>
+                                <td>
+                                    <!-- {!task.Standard_Audit_Statement_Date__c} -->
+                                    <apex:outputText value="{0,date,MM/dd/yyyy}"> 
+                                        <apex:param value="{!task.objActivity.Standard_Audit_Statement_Date__c}" /> 
+                                    </apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0,date,MM/dd/yyyy}"> 
+                                        <apex:param value="{!task.objActivity.CreatedDate}" /> 
+                                    </apex:outputText>
+                                </td>
+                            </tr>
+                            
+                        </apex:repeat>
+                        <apex:outputPanel rendered="{!lstAllActivities == null || lstAllActivities.size == 0}">
+                            <td colspan="100%">
+                                <i>No records to display.</i>
+                            </td>
+                        </apex:outputPanel>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+</apex:page>

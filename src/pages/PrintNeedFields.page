@@ -1,0 +1,159 @@
+<apex:page standardController="Case" extensions="PrintViewCaseController" showHeader="false" readOnly="true" sidebar="false" cache="false" tabStyle="Case" standardStylesheets="true">
+
+    <table width="98%" border="0" cellpadding="0" cellspacing="0">
+        <tr><td align="right"><a href="javascript:window.print();">Print this page</a></td></tr>   
+    </table>
+    
+    <apex:sectionHeader title="" subtitle="CA Program - NEED Fields" />
+    
+    <!-- Get the count of records for related list -->   
+      
+    <apex:variable value="{!0}" var="TotalRec"/> 
+         
+    <apex:pageBlock title="Case Number - {!objCase.CaseNumber}">
+        
+        <apex:pageBlockSection columns="1">
+            <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(objCase.Company_Website__c,'NEED'),TRUE,FALSE)}">
+                <apex:outputLabel styleClass="labelCol vfLabelColTextWrap">Company Website<br/></apex:outputLabel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(objCase.Company_Website__c,'NEED'),TRUE,FALSE)}">
+                <apex:outputField value="{!objCase.Company_Website__c}"/>
+            </apex:pageBlockSectionItem>
+            
+            <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(objCase.Geographic_Focus__c,'NEED'),TRUE,FALSE)}">
+                <apex:outputLabel styleClass="labelCol vfLabelColTextWrap">Geographic Focus<br/></apex:outputLabel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(objCase.Geographic_Focus__c,'NEED'),TRUE,FALSE)}">
+                <apex:outputField value="{!objCase.Geographic_Focus__c}"/>
+            </apex:pageBlockSectionItem>
+            
+            <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(objCase.Primary_Market_Customer_Base__c,'NEED'),TRUE,FALSE)}">
+                <apex:outputLabel styleClass="labelCol vfLabelColTextWrap">Primary Market / Customer Base<br/></apex:outputLabel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(objCase.Primary_Market_Customer_Base__c,'NEED'),TRUE,FALSE)}">
+                <apex:outputField value="{!objCase.Primary_Market_Customer_Base__c}"/>
+            </apex:pageBlockSectionItem>
+            
+            <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(objCase.Policy_Documentation__c,'NEED'),TRUE,FALSE)}">
+                <apex:outputLabel styleClass="labelCol vfLabelColTextWrap">Policy Documentation<br/></apex:outputLabel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(objCase.Policy_Documentation__c,'NEED'),TRUE,FALSE)}">
+                <apex:outputField value="{!objCase.Policy_Documentation__c}"/>
+            </apex:pageBlockSectionItem>
+            
+            <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(objCase.BR_Self_Assessment__c,'NEED'),TRUE,FALSE)}">
+                <apex:outputLabel styleClass="labelCol vfLabelColTextWrap">BR Self Assessment<br/></apex:outputLabel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(objCase.BR_Self_Assessment__c,'NEED'),TRUE,FALSE)}">
+                <apex:outputField value="{!objCase.BR_Self_Assessment__c}"/>
+            </apex:pageBlockSectionItem>
+            
+            <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(objCase.CAs_Response_to_Required_Practices__c,'NEED'),TRUE,FALSE)}">
+                <apex:outputLabel styleClass="labelCol vfLabelColTextWrap">CA's Response to Required Practices<br/></apex:outputLabel><!--'-->
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(objCase.CAs_Response_to_Required_Practices__c,'NEED'),TRUE,FALSE)}">
+                <apex:outputField value="{!objCase.CAs_Response_to_Required_Practices__c}"/>
+            </apex:pageBlockSectionItem>
+            
+            <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(objCase.CAs_Response_to_Forbidden_Practices__c,'NEED'),TRUE,FALSE)}">
+                <apex:outputLabel styleClass="labelCol vfLabelColTextWrap">CA's Response to Forbidden Practices<br/></apex:outputLabel><!--'-->
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(objCase.CAs_Response_to_Forbidden_Practices__c,'NEED'),TRUE,FALSE)}">
+                <apex:outputField value="{!objCase.CAs_Response_to_Forbidden_Practices__c}"/>
+            </apex:pageBlockSectionItem>
+            
+            <!--<apex:outputField value="{!objCase.Company_Website__c}" rendered="{!IF(CONTAINS(objCase.Company_Website__c,'NEED'),TRUE,FALSE)}"/>
+            <apex:outputField value="{!objCase.Geographic_Focus__c}" rendered="{!IF(CONTAINS(objCase.Geographic_Focus__c,'NEED'),TRUE,FALSE)}"/>
+            <apex:outputField value="{!objCase.Primary_Market_Customer_Base__c}" rendered="{!IF(CONTAINS(objCase.Primary_Market_Customer_Base__c,'NEED'),TRUE,FALSE)}"/>
+            <apex:outputField value="{!objCase.Policy_Documentation__c}" rendered="{!IF(CONTAINS(objCase.Policy_Documentation__c,'NEED'),TRUE,FALSE)}"/>
+            <apex:outputField value="{!objCase.BR_Self_Assessment__c}" rendered="{!IF(CONTAINS(objCase.BR_Self_Assessment__c,'NEED'),TRUE,FALSE)}"/>
+            <apex:outputField value="{!objCase.CAs_Response_to_Required_Practices__c}" rendered="{!IF(CONTAINS(objCase.CAs_Response_to_Required_Practices__c,'NEED'),TRUE,FALSE)}"/>
+            <apex:outputField value="{!objCase.CAs_Response_to_Forbidden_Practices__c}" rendered="{!IF(CONTAINS(objCase.CAs_Response_to_Forbidden_Practices__c,'NEED'),TRUE,FALSE)}"/>-->
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+    
+    <!--Root Cases-->
+    <apex:repeat value="{!lstRootCases}" var="r" rendered="{!lstRootCases.size > 0}">  
+                          
+        <apex:pageBlock title="Root Certificate - {!r.Name} ">       
+            <apex:pageBlockSection columns="1">   
+                <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(r.Root_Certificate_Download_URL__c,'NEED'),TRUE,FALSE)}">
+                    <apex:outputLabel styleClass="labelCol vfLabelColTextWrap">Root Certificate Download URL<br/></apex:outputLabel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(r.Root_Certificate_Download_URL__c,'NEED'),TRUE,FALSE)}">
+                    <apex:outputField value="{!r.Root_Certificate_Download_URL__c}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(r.Test_Notes__c,'NEED'),TRUE,FALSE)}">
+                    <apex:outputLabel styleClass="labelCol vfLabelColTextWrap">Test Notes<br/></apex:outputLabel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(r.Test_Notes__c,'NEED'),TRUE,FALSE)}">
+                    <apex:outputField value="{!r.Test_Notes__c}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(r.Revocation_Tested__c,'NEED'),TRUE,FALSE)}">
+                    <apex:outputLabel styleClass="labelCol vfLabelColTextWrap">Revocation Tested<br/></apex:outputLabel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(r.Revocation_Tested__c,'NEED'),TRUE,FALSE)}">
+                    <apex:outputField value="{!r.Revocation_Tested__c}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(r.CA_Browser_Forum_Lint_Test__c,'NEED'),TRUE,FALSE)}">
+                    <apex:outputLabel styleClass="labelCol vfLabelColTextWrap">CA/Browser Forum Lint Test<br/></apex:outputLabel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(r.CA_Browser_Forum_Lint_Test__c,'NEED'),TRUE,FALSE)}">
+                    <apex:outputField value="{!r.CA_Browser_Forum_Lint_Test__c}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(r.Test_Website_Lint_Test__c,'NEED'),TRUE,FALSE)}">
+                    <apex:outputLabel styleClass="labelCol vfLabelColTextWrap">Test Website Lint Test<br/></apex:outputLabel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(r.Test_Website_Lint_Test__c,'NEED'),TRUE,FALSE)}">
+                    <apex:outputField value="{!r.Test_Website_Lint_Test__c}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(r.EV_Tested__c,'NEED'),TRUE,FALSE)}">
+                    <apex:outputLabel styleClass="labelCol vfLabelColTextWrap">EV Tested<br/></apex:outputLabel><!--'-->
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(r.EV_Tested__c,'NEED'),TRUE,FALSE)}">
+                    <apex:outputField value="{!r.EV_Tested__c}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(r.Description_of_PKI_Hierarchy__c,'NEED'),TRUE,FALSE)}">
+                    <apex:outputLabel styleClass="labelCol vfLabelColTextWrap">Description of PKI Hierarchy<br/></apex:outputLabel><!--'-->
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(r.Description_of_PKI_Hierarchy__c,'NEED'),TRUE,FALSE)}">
+                    <apex:outputField value="{!r.Description_of_PKI_Hierarchy__c}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(r.Constraints_on_External_SubCAs_RAs__c,'NEED'),TRUE,FALSE)}">
+                    <apex:outputLabel styleClass="labelCol vfLabelColTextWrap">Constraints on External SubCAs &amp; RAs<br/></apex:outputLabel><!--'-->
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(r.Constraints_on_External_SubCAs_RAs__c,'NEED'),TRUE,FALSE)}">
+                    <apex:outputField value="{!r.Constraints_on_External_SubCAs_RAs__c}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(r.Mozilla_Applied_Constraints__c,'NEED'),TRUE,FALSE)}">
+                    <apex:outputLabel styleClass="labelCol vfLabelColTextWrap">Mozilla Applied Constraints<br/></apex:outputLabel><!--'-->
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!IF(CONTAINS(r.Mozilla_Applied_Constraints__c,'NEED'),TRUE,FALSE)}">
+                    <apex:outputField value="{!r.Mozilla_Applied_Constraints__c}"/>
+                </apex:pageBlockSectionItem>
+                     
+                <!--<apex:outputField value="{!r.Root_Certificate_Download_URL__c}" rendered="{!IF(CONTAINS(r.Root_Certificate_Download_URL__c,'NEED'),TRUE,FALSE)}"/>  
+                <apex:outputField value="{!r.Test_Notes__c}" rendered="{!IF(CONTAINS(r.Test_Notes__c,'NEED'),TRUE,FALSE)}"/> 
+                <apex:outputField value="{!r.Revocation_Tested__c}" rendered="{!IF(CONTAINS(r.Revocation_Tested__c,'NEED'),TRUE,FALSE)}"/> 
+                <apex:outputField value="{!r.CA_Browser_Forum_Lint_Test__c}" rendered="{!IF(CONTAINS(r.CA_Browser_Forum_Lint_Test__c,'NEED'),TRUE,FALSE)}"/> 
+                <apex:outputField value="{!r.Test_Website_Lint_Test__c}" rendered="{!IF(CONTAINS(r.Test_Website_Lint_Test__c,'NEED'),TRUE,FALSE)}"/> 
+                <apex:outputField value="{!r.EV_Tested__c}" rendered="{!IF(CONTAINS(r.EV_Tested__c,'NEED'),TRUE,FALSE)}"/> 
+                <apex:outputField value="{!r.Description_of_PKI_Hierarchy__c}" rendered="{!IF(CONTAINS(r.Description_of_PKI_Hierarchy__c,'NEED'),TRUE,FALSE)}"/> 
+                <apex:outputField value="{!r.Constraints_on_External_SubCAs_RAs__c}" rendered="{!IF(CONTAINS(r.Constraints_on_External_SubCAs_RAs__c,'NEED'),TRUE,FALSE)}"/> 
+                <apex:outputField value="{!r.Mozilla_Applied_Constraints__c}" rendered="{!IF(CONTAINS(r.Mozilla_Applied_Constraints__c,'NEED'),TRUE,FALSE)}"/>--> 
+            </apex:pageBlockSection>                 
+        </apex:pageBlock>                                                  
+    </apex:repeat>
+    
+    <style type="text/css">
+        .pbTitle {width: 100px;white-space: nowrap;}    
+    </style>
+</apex:page>

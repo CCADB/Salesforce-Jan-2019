@@ -1,0 +1,68 @@
+<apex:page controller="IncorrectFormatForPEMInfoReport" sidebar="false" readOnly="true">
+    <apex:form >
+        <style>
+            thead td {
+                font-weight:bold;
+                color:white;
+                font-size:14px;
+            }
+            table td {
+                padding:10px;
+                word-break:break-word;
+            }
+            <!--table#innertable td {
+                border:1px solid black;
+            }-->
+        </style>
+        <apex:sectionHeader title="Incorrect Format For PEM Info (No. of records: {!lstWrapperAccounts.size})"/>
+        <div style="margin-top:20px;margin-left:10px;margin-right:10px">
+             <table border="1" width="100%" style="border-collapse:collapse;table-layout:fixed;">
+                <thead>
+                    <tr style="background-color:#9d9999;">
+                        <td width="15%">
+                            CA Owner
+                        </td>
+                        <td width="25%">
+                            Root Certificate / Intermediate Certificate
+                        </td>
+                        <td width="7%">
+                            Record Type
+                        </td>
+                        <td width="8%">
+                            Length of First Line in PEM
+                        </td>
+                        <td width="45%">
+                            SHA-256 Fingerprint
+                        </td>                       
+                    </tr>
+                </thead>
+                <tbody>
+                    <apex:repeat value="{!lstWrapperAccounts}" var="wrapaccount" rendered="{!lstWrapperAccounts != null && lstWrapperAccounts.size > 0}">
+                        <tr style="background-color:#c9ecf7">
+                            <td>
+                                {!wrapaccount.objAccount.CA_Owner__c}
+                            </td>  
+                            <td>
+                                <a href = "/{!wrapaccount.objAccount.Id}" target="_blank">{!wrapaccount.objAccount.Name}</a>
+                            </td>
+                            <td>
+                                {!wrapaccount.objAccount.RecordType.Name}
+                            </td>
+                            <td>
+                                {!wrapaccount.PEMLength}
+                            </td>
+                            <td>
+                                {!wrapaccount.objAccount.SHA_256_Fingerprint__c}
+                            </td>                           
+                        </tr>
+                    </apex:repeat>
+                    <apex:outputPanel rendered="{!lstWrapperAccounts == null || lstWrapperAccounts.size == 0}">
+                        <td colspan="100%">
+                            <i>No records to display.</i>
+                        </td>
+                    </apex:outputPanel>
+                </tbody>
+            </table>
+        </div>
+    </apex:form>
+</apex:page>

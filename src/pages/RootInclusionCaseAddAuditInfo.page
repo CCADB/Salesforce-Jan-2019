@@ -1,0 +1,229 @@
+<apex:page standardController="Case" id="pg" sidebar="false" extensions="RootInclusionCaseAddAuditInfoController">
+    <apex:sectionHeader title="Case" subtitle="{!Case.CaseNumber}"/>
+    <apex:form id="frm">
+        <style>
+            h2.mainTitle {
+                white-space: nowrap;
+            }
+        </style>
+        <apex:pageMessages id="pgErrorMessage"></apex:pageMessages>
+        
+        <apex:pageBlock title="Cannot proceed to update Case" rendered="{!isCaseCompleted}">
+            <apex:outputText value="Case is completed. You cannot make changes."/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <apex:commandButton value="Back to Case" action="{!cancel}"/>
+        </apex:pageBlock>
+        
+        <apex:pageBlock title="Select Root Certificate from which to copy Audit and CP/CPS information to your Case" rendered="{!!isCaseCompleted && !isShowSelectedRootCert}">
+            <apex:pageBlockSection >
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >CA Owner Name</apex:outputLabel>
+                    <apex:outputLink value="/{!Case.AccountId}" target="_blank">{!Case.Account.Name}</apex:outputLink> 
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Record Type</apex:outputLabel>
+                    <apex:outputLabel >{!Case.RecordType.Name}</apex:outputLabel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Root Certificate Details" columns="1">
+                <apex:pageBlockTable value="{!lstWrapAllRootCerts}" var="rootcerts">
+                    <apex:column headerValue="Select">
+                        <apex:inputCheckbox value="{!rootcerts.isSelected}" styleClass="clsSelectRootCert" onclick="fnSelectAnyOne(this);"/>
+                    </apex:column>
+                    <apex:column headerValue="Root Certificate Name" value="{!rootcerts.objAccount.Name}" />
+                    <apex:column headerValue="Mozilla Status" >
+                        <apex:outputField value="{!rootcerts.objAccount.Status__c}" />
+                    </apex:column>
+                    <apex:column headerValue="Microsoft Status" >
+                        <apex:outputField value="{!rootcerts.objAccount.Microsoft_Status__c}" />
+                    </apex:column>
+                    <apex:column headerValue="Valid From (GMT)" >
+                        <apex:outputField value="{!rootcerts.objAccount.Valid_From_GMT__c}" />
+                    </apex:column>
+                    <apex:column headerValue="Valid To (GMT)" >
+                        <apex:outputField value="{!rootcerts.objAccount.Valid_To_GMT__c}" />
+                    </apex:column>
+                    <apex:column headerValue="SHA 256 Fingerprint" >
+                        <apex:outputField value="{!rootcerts.objAccount.SHA_256_Fingerprint__c}" />
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton value="Show Audit Details For Selected Root" reRender="pgErrorMessage,frm" action="{!ViewAuditDetails}"/>
+                <apex:commandButton value="Go Back" action="{!cancel}"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+        <apex:outputPanel id="opSelectedRootCert">        
+            <apex:pageBlock title="Information to be Copied" rendered="{!!isCaseCompleted && isShowSelectedRootCert}">
+                <apex:pageBlockSection title="Auditor Information " columns="1" collapsible="false">
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >Auditor </apex:outputLabel>
+                        <apex:outputLabel >{!objSelectedRootCerts.Auditor_New__r.Name}</apex:outputLabel>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >Auditor Location </apex:outputLabel>
+                        <apex:outputLabel >{!objSelectedRootCerts.Auditor_Location_New__r.Name}</apex:outputLabel>
+                    </apex:pageBlockSectionItem>
+                    <!-- do not display formula fields
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >Auditor Website (New)</apex:outputLabel>
+                        <apex:outputLabel >{!objSelectedRootCerts.Auditor_Website_New__c}</apex:outputLabel>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >Auditor Qualifications (New)</apex:outputLabel>
+                        <apex:outputLabel >{!objSelectedRootCerts.Auditor_Qualifications_New__c}</apex:outputLabel>
+                    </apex:pageBlockSectionItem>
+                    -->
+                </apex:pageBlockSection>
+                <apex:pageBlockSection title="Audit Information" columns="2" collapsible="false">
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >Standard Audit</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.Standard_Audit__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >Standard Audit Statement Date</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.Standard_Audit_Statement_Date__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >Standard Audit Type</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.Standard_Audit_Type__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >Standard Audit Period Start Date</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.Standard_Audit_Period_Start_Date__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem />
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >Standard Audit Period End Date</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.Standard_Audit_Period_End_Date__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >Code Signing Audit</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.Code_Signing_Audit__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >Code Signing Audit Statement Date</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.Code_Signing_Audit_Statement_Date__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >Code Signing Audit Type</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.Code_Signing_Audit_Type__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >Code Signing Audit Period Start Date</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.Code_Signing_Audit_Period_Start_Date__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem />
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >Code Signing Audit Period End Date</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.Code_Signing_Audit_Period_End_Date__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >BR Audit</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.BR_Audit__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >BR Audit Statement Date</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.BR_Audit_Statement_Date__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >BR Audit Type</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.BR_Audit_Type__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >BR Audit Period Start Date</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.BR_Audit_Period_Start_Date__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem />
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >BR Audit Period End Date</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.BR_Audit_Period_End_Date__c}"/>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >EV SSL Audit</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.EV_Audit__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >EV SSL Audit Statement Date</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.EV_Audit_Statement_Date__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >EV SSL Audit Type</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.EV_Audit_Type__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >EV SSL Audit Period Start Date</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.EV_Audit_Period_Start_Date__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem />
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >EV SSL Audit Period End Date</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.EV_Audit_Period_End_Date__c}"/>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >EV Code Signing Audit</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.EV_Code_Signing_Audit__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >EV Code Signing Audit Statement Date</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.EV_Code_Signing_Audit_Statement_Date__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >EV Code Signing Audit Type</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.EV_Code_Signing_Audit_Type__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >EV Code Signing Audit Period Start Date</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.EV_Code_Signing_Audit_Period_Start_Date__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem />
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >EV Code Signing Audit Period End Date</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.EV_Code_Signing_Audit_Period_End_Date__c}"/>
+                    </apex:pageBlockSectionItem>
+                    
+                </apex:pageBlockSection>
+                <apex:pageBlockSection title="Policies and Practices Information" columns="2" collapsible="false">
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >Policy Documentation</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.Policy_Documentation__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >Certificate Policy (CP)</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.Certificate_Policy_CP__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >CA Document Repository</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.CA_Document_Repository__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >Certification Practice Statement (CPS)</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.Certification_Practice_Statement_CPS__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem />
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel >CP/CPS Last Updated Date</apex:outputLabel>
+                        <apex:outputField value="{!objSelectedRootCerts.CP_CPS_Last_Updated_Date__c}"/>
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+                <apex:pageBlockButtons location="bottom">
+                    <apex:commandButton value="Copy Data to Case" reRender="pgErrorMessage" action="{!UpdateCaseInfo}"/>
+                    <apex:commandButton value="Select a Different Root Cert" action="{!SelectDifferentRootCerts}" reRender="frm,pgErrorMessage"/> 
+                    <apex:commandButton value="Go Back" action="{!cancel}"/>
+                </apex:pageBlockButtons>
+            </apex:pageBlock>
+        </apex:outputPanel>
+        <script>
+            function fnSelectAnyOne(checkbox){
+                var checks = document.querySelectorAll('.clsSelectRootCert');
+                for (var i = 0; i < checks.length; i++) {
+                    var check = checks[i];
+                    check.checked = false;
+                }
+                checkbox.checked = true;
+            }
+            
+        </script>
+    </apex:form>
+</apex:page>
